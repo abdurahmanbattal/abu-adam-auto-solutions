@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Car, Filter, ChevronDown } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Car, Filter, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -8,100 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-interface CarItem {
-  id: number;
-  name: string;
-  type: string;
-  price: number;
-  year: number;
-  image: string;
-  paymentType: "كاش" | "أقساط" | "كاش وأقساط";
-}
-
-const cars: CarItem[] = [
-  {
-    id: 1,
-    name: "مرسيدس E-Class",
-    type: "سيدان",
-    price: 45000,
-    year: 2023,
-    image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=600&h=400&fit=crop",
-    paymentType: "كاش وأقساط",
-  },
-  {
-    id: 2,
-    name: "بي ام دبليو X5",
-    type: "SUV",
-    price: 55000,
-    year: 2024,
-    image: "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600&h=400&fit=crop",
-    paymentType: "أقساط",
-  },
-  {
-    id: 3,
-    name: "أودي A6",
-    type: "سيدان",
-    price: 42000,
-    year: 2023,
-    image: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=600&h=400&fit=crop",
-    paymentType: "كاش",
-  },
-  {
-    id: 4,
-    name: "رينج روفر سبورت",
-    type: "SUV",
-    price: 75000,
-    year: 2024,
-    image: "https://images.unsplash.com/photo-1606016159991-dfe4f2746ad5?w=600&h=400&fit=crop",
-    paymentType: "كاش وأقساط",
-  },
-  {
-    id: 5,
-    name: "تويوتا كامري",
-    type: "سيدان",
-    price: 28000,
-    year: 2023,
-    image: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=600&h=400&fit=crop",
-    paymentType: "أقساط",
-  },
-  {
-    id: 6,
-    name: "لكزس RX",
-    type: "SUV",
-    price: 62000,
-    year: 2024,
-    image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=600&h=400&fit=crop",
-    paymentType: "كاش وأقساط",
-  },
-  {
-    id: 7,
-    name: "هوندا أكورد",
-    type: "سيدان",
-    price: 32000,
-    year: 2023,
-    image: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=600&h=400&fit=crop",
-    paymentType: "كاش",
-  },
-  {
-    id: 8,
-    name: "بورش كايين",
-    type: "SUV",
-    price: 95000,
-    year: 2024,
-    image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&h=400&fit=crop",
-    paymentType: "أقساط",
-  },
-];
-
-const carTypes = ["الكل", "سيدان", "SUV"];
-const priceRanges = [
-  { label: "الكل", min: 0, max: Infinity },
-  { label: "أقل من 35,000 دينار", min: 0, max: 35000 },
-  { label: "35,000 - 50,000 دينار", min: 35000, max: 50000 },
-  { label: "50,000 - 75,000 دينار", min: 50000, max: 75000 },
-  { label: "أكثر من 75,000 دينار", min: 75000, max: Infinity },
-];
+import { cars, carTypes, priceRanges } from "@/data/carsData";
 
 const CarGallerySection = () => {
   const [selectedType, setSelectedType] = useState("الكل");
@@ -189,12 +97,18 @@ const CarGallerySection = () => {
               className="group bg-card rounded-xl overflow-hidden border border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10"
             >
               {/* Car Image */}
-              <div className="relative aspect-[4/3] overflow-hidden">
+              <Link to={`/car/${car.id}`} className="block relative aspect-[4/3] overflow-hidden">
                 <img
-                  src={car.image}
+                  src={car.images[0]}
                   alt={car.name}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
+                  <span className="flex items-center gap-2 text-white text-sm font-medium">
+                    <Eye className="w-4 h-4" />
+                    عرض التفاصيل
+                  </span>
+                </div>
                 <div className="absolute top-3 right-3">
                   <span className="bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full">
                     {car.paymentType}
@@ -205,14 +119,16 @@ const CarGallerySection = () => {
                     {car.year}
                   </span>
                 </div>
-              </div>
+              </Link>
 
               {/* Car Details */}
               <div className="p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
-                    {car.name}
-                  </h3>
+                  <Link to={`/car/${car.id}`}>
+                    <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
+                      {car.name}
+                    </h3>
+                  </Link>
                   <span className="text-xs bg-secondary text-muted-foreground px-2 py-1 rounded">
                     {car.type}
                   </span>
